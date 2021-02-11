@@ -1,35 +1,21 @@
 package pl.riiuku.ftp;
 
-import org.junit.After;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.mockftpserver.fake.FakeFtpServer;
-import org.mockftpserver.fake.UserAccount;
-import org.mockftpserver.fake.filesystem.DirectoryEntry;
-import org.mockftpserver.fake.filesystem.FileEntry;
-import org.mockftpserver.fake.filesystem.FileSystem;
-import org.mockftpserver.fake.filesystem.UnixFakeFileSystem;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class FtpConnectorTest {
+public class FtpConnectorTest  {
+
 
     private static FakeFtpServer fakeFtpServer;
 
-
     @BeforeAll
     public static void beforeAll() throws InterruptedException {
-        fakeFtpServer = new FakeFtpServer();
-        fakeFtpServer.addUserAccount(new UserAccount("user", "password", "/data"));
-        fakeFtpServer.setServerControlPort(0);
-        FileSystem fileSystem = new UnixFakeFileSystem();
-        fileSystem.add(new DirectoryEntry("/data"));
-        fileSystem.add(new FileEntry("/data/foobar.txt", "abcdef 1234567890"));
-        fakeFtpServer.setFileSystem(fileSystem);
-        fakeFtpServer.setServerControlPort(0);
-
+        fakeFtpServer = MockFtp.createFtpServer();
         fakeFtpServer.start();
     }
 
