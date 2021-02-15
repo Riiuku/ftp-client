@@ -3,7 +3,7 @@ package pl.riiuku.ftp;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
 
-import java.io.IOException;
+import java.io.*;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
@@ -27,5 +27,23 @@ public class FtpQuery {
         } catch (IOException e) {
             throw new NullPointerException(e.getMessage());
         }
+    }
+
+    public void uploadFile(File file, String path) {
+        try {
+            ftpClient.storeFile(path, new FileInputStream(file));
+        } catch (IOException e) {
+            throw new RuntimeException(e.getMessage());
+        }
+    }
+
+    public void downloadFile(String path, String out) {
+        try {
+            FileOutputStream stream = new FileOutputStream(out);
+            ftpClient.retrieveFile(path, stream);
+        } catch (Exception e) {
+            throw new RuntimeException(e.getLocalizedMessage());
+        }
+
     }
 }
