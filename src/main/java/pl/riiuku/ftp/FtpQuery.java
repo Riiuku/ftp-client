@@ -46,4 +46,14 @@ public class FtpQuery {
         }
 
     }
+
+    public void deleteFile(String path) {
+        try {
+            boolean deleted = ftpClient.deleteFile(path);
+            if(!deleted)
+                throw new RuntimeException("File not deleted");
+        } catch (IOException e) {
+            throw new RuntimeException(e.getMessage());
+        }
+    }
 }

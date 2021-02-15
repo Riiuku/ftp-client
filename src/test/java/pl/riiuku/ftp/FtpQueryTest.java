@@ -1,9 +1,7 @@
 package pl.riiuku.ftp;
 
 import org.apache.commons.net.ftp.FTPClient;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.mockftpserver.fake.FakeFtpServer;
 
 import java.io.File;
@@ -13,16 +11,15 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class FtpQueryTest {
 
     private static FTPClient ftpClient;
     private static FakeFtpServer fakeFtpServer;
 
-    @BeforeAll
-    public static void beforeAll() {
+    @BeforeEach
+    public void beforeAll() {
         fakeFtpServer = MockFtp.createFtpServer();
         fakeFtpServer.start();
         ftpClient = MockFtp.createFtpConnector(fakeFtpServer.getServerControlPort());
@@ -55,10 +52,20 @@ public class FtpQueryTest {
         ftpQuery.downloadFile("/data/foobar.txt", "foobar.txt");
         assertTrue(new File("foobar.txt").exists());
         new File("foobar.txt").delete();
+
     }
 
-    @AfterAll
-    public static void afterAll() {
+    @Test()
+    public void deleteFile() {
+        FtpQuery ftpQuery = new FtpQuery(ftpClient);
+        ftpQuery.deleteFile("/data/foobar.txt");
+        assertFalse(fakeFtpServer.getFileSystem().exists("/data/foobar.txt"));
+
+        assertThrows(RuntimeException.class, () ->  ftpQuery.deleteFile("/data/foobar.txt"));
+    }
+
+    @AfterEach
+    public void afterAll() {
         fakeFtpServer.stop();
     }
 }
